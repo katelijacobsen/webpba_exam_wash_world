@@ -1,6 +1,17 @@
 # Wash World 2.0
 
+![Wash World](docs/banner.jpeg)
+
 A web app for Wash World car wash customers: sign up for a membership, manage your cars and profile, find wash locations on a map, and follow wash guides.
+
+<details>
+<summary>Design mockups</summary>
+
+| Login / Sign-up | Profile & Cars | Status view | Wash process |
+|---|---|---|---|
+| ![Login wireframes](docs/wireframe-login.png) | ![Profile wireframes](docs/wireframe-profile.png) | ![Status wireframes](docs/wireframe-status.png) | ![Wash process wireframes](docs/wireframe-wash-process.png) |
+
+</details>
 
 The repo is a monorepo with two parts that each run in Docker:
 
