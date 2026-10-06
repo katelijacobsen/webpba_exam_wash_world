@@ -1,44 +1,79 @@
 import Button from "./Button";
 import Icon from "./Icon";
 import { ButtonProps } from "./Button";
+import type { IconNameType } from "./IconMap";
 
 interface DialogProps {
   id: string;
   title?: string;
+  description?: string;
+  iconName?: IconNameType;
+  tone?: "danger" | "normal";
   buttonOne?: ButtonProps;
   buttonTwo?: ButtonProps;
   buttonThree?: ButtonProps;
 }
 
-const Dialog = ({ id, title, buttonTwo, buttonThree }: DialogProps) => {
+// Shared shell for native <dialog> modals (focus trap + Esc come for free)
+export const dialogClass =
+  "m-auto w-[min(calc(100vw-2rem),28rem)] max-h-[calc(100dvh-2rem)] p-0 rounded-8 bg-surface text-text border border-grey-100 shadow-raised overflow-y-auto";
+
+export function DialogCloseButton() {
+  return (
+    <button
+      type="submit"
+      formNoValidate
+      aria-label="Luk dialog"
+      className="absolute top-12 right-12 grid place-items-center w-48 h-48 rounded-full text-grey-200 hover:text-text hover:bg-grey-100"
+    >
+      <Icon iconName="close" />
+    </button>
+  );
+}
+
+const Dialog = ({
+  id,
+  title,
+  description,
+  iconName = "trash",
+  tone = "danger",
+  buttonTwo,
+  buttonThree,
+}: DialogProps) => {
   const titleId = `${id}-title`;
+  const descId = `${id}-desc`;
 
   return (
     <dialog
       id={id}
       aria-labelledby={titleId}
-      aria-modal="true"
-      className="backdrop:bg-black/50 min-w-[280px] max-w-[336px] p-32 mt-80 mx-auto rounded-12 shadow-lg"
+      aria-describedby={description ? descId : undefined}
+      className={dialogClass}
     >
-      <form method="dialog" className="grid gap-32">
-        <div className="flex items-start justify-between gap-8">
-          <p id={titleId} className="uppercase text-center font-bold flex-1">{title}</p>
-          <button
-            type="submit"
-            aria-label="Luk dialog"
-            className="shrink-0 flex items-center justify-center w-[32px] h-[32px] rounded-8 text-grey-200 hover:text-text hover:bg-grey-100 focus-visible:outline-2 focus-visible:outline-primary-400"
+      <form method="dialog" className="relative grid gap-24 p-24 pt-32 sm:p-32">
+        <DialogCloseButton />
+
+        <div className="grid justify-items-center text-center gap-16">
+          <span
+            className={`grid place-items-center w-64 h-64 rounded-full ${
+              tone === "danger" ? "bg-danger-10-opacity text-danger-text" : "bg-primary-50 text-primary-800"
+            }`}
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </button>
+            <Icon iconName={iconName} size="md" />
+          </span>
+          <h2 id={titleId} className="text-md font-bold uppercase max-w-[22ch]">
+            {title}
+          </h2>
+          {description && (
+            <p id={descId} className="text-grey-200 max-w-[32ch]">
+              {description}
+            </p>
+          )}
         </div>
 
-        <Icon iconName="trash" size="lg" style="justify-self-center text-primary-600" />
-
-        <div className="flex justify-around gap-12">
-          {buttonTwo   && <Button {...buttonTwo}   typeAction="submit" />}
-          {buttonThree && <Button {...buttonThree} typeAction="submit" />}
+        <div className="grid grid-cols-2 gap-12">
+          {buttonTwo && <Button {...buttonTwo} size="lg" typeAction="submit" />}
+          {buttonThree && <Button {...buttonThree} size="lg" typeAction="submit" />}
         </div>
       </form>
     </dialog>

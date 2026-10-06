@@ -1,81 +1,10 @@
 @import "tailwindcss";
 
-:root {
-  interpolate-size: allow-keywords;
-
-  /* ---------- color / primary ---------- */
-  --color-primary-50:  oklch(0.974 0.024 158);
-  --color-primary-100: oklch(0.903 0.064 158);
-  --color-primary-200: oklch(0.829 0.107 159);
-  --color-primary-400: oklch(0.710 0.175 154);
-  --color-primary-600: oklch(0.549 0.135 154);
-  --color-primary-800: oklch(0.385 0.088 155);
-  --color-primary-900: oklch(0.273 0.062 155);
- 
-  /* ---------- color / secondary-orange ---------- */
-  --color-secondary-50:  oklch(0.965 0.016 65);
-  --color-secondary-100: oklch(0.872 0.076 66);
-  --color-secondary-200: oklch(0.768 0.143 57);
-  --color-secondary-400: oklch(0.685 0.211 42);
-  --color-secondary-600: oklch(0.493 0.155 39);
-  --color-secondary-800: oklch(0.336 0.111 39);
-  --color-secondary-900: oklch(0.207 0.067 40);
- 
-  /* ---------- color / secondary-grey ---------- */
-  --color-grey-50:oklch(0.971 0 0);
-  --color-grey-100:oklch(0.922 0 0);
-  --color-grey-200:oklch(0.477 0 0);
-  --color-grey-400:oklch(0.269 0 0);
- 
-  /* ---------- color / base ---------- */
-  --color-bg:oklch(0.972 0.003 106);
-  --color-bg-dark:oklch(0.182 0.002 106);
-  --color-text:var(--color-bg-dark);
-  --color-surface:oklch(0.984 0.002 106);
-  --color-surface-2:oklch(0.981 0 0);
- 
-  /* ---------- color / interaction ---------- */
-  --color-danger:oklch(0.591 0.213 27);
-  --color-danger-10-opacity: oklch(0.591 0.213 27 / 0.1);
- 
-  --color-warning:oklch(0.476 0.105 71);
-  --color-warning-10-opacity:oklch(0.798 0.157 87 / 0.1);
- 
-  --color-info:oklch(0.382 0.179 281);
-  --color-info-10-opacity: oklch(0.382 0.179 281 / 0.1);
- 
-  --color-success:oklch(0.682 0.211 144);
-  --color-success-100:oklch(0.953 0.029 142);
-  --color-success-10-opacity:oklch(0.682 0.211 144 / 0.1);
-
-  /* ---------- spacing ---------- */
-  --spacing-0: 0rem;
-  --spacing-2: 0.125rem;  /* 2px */
-  --spacing-4: 0.25rem;   /* 4px */
-  --spacing-6: 0.375rem;  /* 6px */
-  --spacing-8: 0.5rem;    /* 8px */
-  --spacing-12: 0.75rem;  /* 12px */
-  --spacing-16: 1rem;     /* 16px */
-  --spacing-20: 1.25rem;  /* 20px */
-  --spacing-24: 1.5rem;   /* 24px */
-  --spacing-32: 2rem;     /* 32px */
-  --spacing-40: 2.5rem;   /* 40px */
-  --spacing-48: 3rem;     /* 48px */
-  --spacing-64: 4rem;     /* 64px */
-  --spacing-72: 4.5rem;   /* 72px */
-  --spacing-80: 5rem;     /* 80px */
-  /* ---------- typography  ---------- */
-  --base: 1.125rem;
-  --text-xs: clamp(calc(var(--base) * 0.64), 0.6vw + 0.8rem, calc(var(--base) * 0.75));
-  --text-sm: clamp(calc(var(--base) * 0.80), 0.7vw + 0.9rem, calc(var(--base) * 0.95));
-  --text-base: clamp(var(--base), 1vw + 1rem, calc(var(--base) * 1.1));
-  --text-md: clamp(calc(var(--base) * 1.25), 1.2vw + 1rem, calc(var(--base) * 1.45));
-  --text-lg: clamp(calc(var(--base) * 1.56), 1.5vw + 1rem, calc(var(--base) * 1.8));
-  --text-xl: clamp(calc(var(--base) * 1.95), 2vw + 1rem, calc(var(--base) * 2.3));
-  --text-2xl: clamp(calc(var(--base) * 2.44), 2.5vw + 1rem, calc(var(--base) * 2.9));
-  --text-3xl: clamp(calc(var(--base) * 3.05), 3vw + 1rem, calc(var(--base) * 3.6));
-}
-
+/*
+  Design tokens — mirror the Figma variables (WPBA-01 Wash World).
+  Values live directly in @theme so Tailwind generates utilities AND
+  exposes them as CSS variables (var(--color-primary-400) etc.).
+*/
 @theme {
   --color-*: initial;
   --spacing-*: initial;
@@ -83,164 +12,289 @@
   --font-*: initial;
   --radius-*: initial;
 
-  /*colorpalette*/
-  --color-primary-50:  var(--color-primary-50);
-  --color-primary-100: var(--color-primary-100);
-  --color-primary-200: var(--color-primary-200);
-  --color-primary-400: var(--color-primary-400);
-  --color-primary-600: var(--color-primary-600);
-  --color-primary-800: var(--color-primary-800);
-  --color-primary-900: var(--color-primary-900);
- 
-  /* secondary (orange) */
-  --color-secondary-50:  var(--color-secondary-50);
-  --color-secondary-100: var(--color-secondary-100);
-  --color-secondary-200: var(--color-secondary-200);
-  --color-secondary-400: var(--color-secondary-400);
-  --color-secondary-600: var(--color-secondary-600);
-  --color-secondary-800: var(--color-secondary-800);
-  --color-secondary-900: var(--color-secondary-900);
- 
-  /* secondary (grey) */
-  --color-grey-50:  var(--color-grey-50);
-  --color-grey-100: var(--color-grey-100);
-  --color-grey-200: var(--color-grey-200);
-  --color-grey-400: var(--color-grey-400);
- 
-  /* base */
-  --color-bg: var(--color-bg);
-  --color-bg-dark:var(--color-bg-dark);
-  --color-text:var(--color-text);
-  --color-surface:var(--color-surface);
-  --color-surface-2:var(--color-surface-2);
- 
-  /* interaction */
-  --color-danger:var(--color-danger);
-  --color-danger-10-opacity:var(--color-danger-10-opacity);
- 
-  --color-warning:var(--color-warning);
-  --color-warning-10-opacity:var(--color-warning-10-opacity);
- 
-  --color-info:var(--color-info);
-  --color-info-10-opacity:var(--color-info-10-opacity);
- 
-  --color-success:var(--color-success);
-  --color-success-100:var(--color-success-100);
-  --color-success-10-opacity:var(--color-success-10-opacity);
+  /* color / primary */
+  --color-primary-50:  #e8faf2;
+  --color-primary-100: #b8eed5;
+  --color-primary-200: #8ae2b9;
+  --color-primary-400: #06c167;
+  --color-primary-600: #039050;
+  --color-primary-800: #015e33;
+  --color-primary-900: #003d22;
 
-  /* spacing */
-  --spacing-0: var(--spacing-0);
-  --spacing-2: var(--spacing-2);
-  --spacing-4: var(--spacing-4);
-  --spacing-6: var(--spacing-6);
-  --spacing-8: var(--spacing-8);
-  --spacing-12: var(--spacing-12);
-  --spacing-16: var(--spacing-16);
-  --spacing-20: var(--spacing-20);
-  --spacing-24: var(--spacing-24);
-  --spacing-32: var(--spacing-32);
-  --spacing-40: var(--spacing-40);
-  --spacing-48: var(--spacing-48);
-  --spacing-64: var(--spacing-64);
-  --spacing-72: var(--spacing-72);
-  --spacing-80: var(--spacing-80);
+  /* color / secondary (orange) */
+  --color-secondary-50:  oklch(0.965 0.016 65);
+  --color-secondary-100: oklch(0.872 0.076 66);
+  --color-secondary-200: oklch(0.768 0.143 57);
+  --color-secondary-400: oklch(0.685 0.211 42);
+  --color-secondary-600: oklch(0.493 0.155 39);
+  --color-secondary-800: oklch(0.336 0.111 39);
+  --color-secondary-900: oklch(0.207 0.067 40);
 
-   /* rounded */
-  --radius-0: var(--spacing-0);
-  --radius-2: var(--spacing-2);
-  --radius-4: var(--spacing-4);
-  --radius-6: var(--spacing-6);
-  --radius-8: var(--spacing-8);
-  --radius-12: var(--spacing-12);
-  --radius-16: var(--spacing-16);
-  --radius-20: var(--spacing-20);
-  --radius-24: var(--spacing-24);
-  --radius-32: var(--spacing-32);
-  --radius-40: var(--spacing-40);
-  --radius-48: var(--spacing-48);
-  --radius-64: var(--spacing-64);
-  --radius-72: var(--spacing-72);
-  --radius-80: var(--spacing-80);
+  /* color / secondary (grey) — grey-200 is the darkest grey that still
+     passes 4.5:1 on every light surface, use it for secondary text */
+  --color-grey-50:  #f2f2f2;
+  --color-grey-100: #e5e5e5;
+  --color-grey-200: #5e5e5e;
+  --color-grey-400: #2e2e2e;
+
+  /* color / base */
+  --color-white:     #ffffff;
+  --color-black:     #000000;
+  --color-bg:        #f7f7f5;
+  --color-bg-dark:   #1a1a18;
+  --color-text:      #1a1a18;
+  --color-surface:   #fbfbf8;
+  --color-surface-2: #fafafa;
+
+  /* color / interaction
+     *-text variants are darkened so small text on the 10% tints passes WCAG AA */
+  --color-danger:            #e0362d;
+  --color-danger-text:       #b3241c;
+  --color-danger-10-opacity: #e0362d1a;
+
+  --color-warning:            #e2ba04;
+  --color-warning-text:       #8e5800;
+  --color-warning-10-opacity: #e2ba041a;
+
+  --color-info:            oklch(0.382 0.179 281);
+  --color-info-10-opacity: oklch(0.382 0.179 281 / 0.1);
+
+  --color-success:            #35b53a;
+  --color-success-text:       #1d6e21;
+  --color-success-100:        #e6f6e6;
+  --color-success-10-opacity: #35b53a1a;
+
+  /* spacing (px-named, rem-valued) */
+  --spacing-0: 0rem;
+  --spacing-2: 0.125rem;
+  --spacing-4: 0.25rem;
+  --spacing-6: 0.375rem;
+  --spacing-8: 0.5rem;
+  --spacing-10: 0.625rem;
+  --spacing-12: 0.75rem;
+  --spacing-16: 1rem;
+  --spacing-20: 1.25rem;
+  --spacing-24: 1.5rem;
+  --spacing-32: 2rem;
+  --spacing-40: 2.5rem;
+  --spacing-48: 3rem;
+  --spacing-64: 4rem;
+  --spacing-72: 4.5rem;
+  --spacing-80: 5rem;
+
+  /* radius */
+  --radius-0: 0rem;
+  --radius-2: 0.125rem;
+  --radius-4: 0.25rem;
+  --radius-6: 0.375rem;
+  --radius-8: 0.5rem;
+  --radius-12: 0.75rem;
+  --radius-16: 1rem;
+  --radius-20: 1.25rem;
+  --radius-24: 1.5rem;
+
+  /* shadows */
+  --shadow-card: 0 1px 2px rgb(26 26 24 / 0.04), 0 4px 16px -4px rgb(26 26 24 / 0.08);
+  --shadow-raised: 0 2px 4px rgb(26 26 24 / 0.06), 0 12px 32px -8px rgb(26 26 24 / 0.18);
 
   /* aspect ratios */
   --aspect-image: 16 / 9;
 
-  /* typography */
-  --font-sans: var(--font-gilroy); /*Look into font folder*/
-  --text-xs: var(--text-xs);
-  --text-sm: var(--text-sm);
-  --text-base: var(--text-base);
-  --text-lg: var(--text-lg);
-  --text-xl: var(--text-xl);
+  /* typography — fluid scale on an 18px base (Figma body = 18px) */
+  --font-sans: var(--font-gilroy), Helvetica, Arial, sans-serif;
+  --text-xs:   clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --text-sm:   clamp(0.875rem, 0.85rem + 0.12vw, 0.9rem);
+  --text-base: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --text-md:   clamp(1.125rem, 1.05rem + 0.35vw, 1.40625rem);
+  --text-lg:   clamp(1.375rem, 1.25rem + 0.6vw, 1.75rem);
+  --text-xl:   clamp(1.75rem, 1.5rem + 1.2vw, 2.5rem);
+  --text-2xl:  clamp(2.25rem, 1.8rem + 2.2vw, 3.5rem);
+
+  --animate-fade-in: fade-in 200ms ease-out both;
+  --animate-rise: rise 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--color-bg);
-    --foreground: var(--color-bg-dark);
+/* Layout constants used by the app shell */
+:root {
+  color-scheme: light;
+  interpolate-size: allow-keywords;
+  --sidebar-w: 15.5rem;
+  --header-h: 4rem;
+  --nav-h: 6.5rem; /* floating bottom nav (≈90px) + its 12px margin */
+}
+
+/* ---------- base ---------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* 16px+ inputs stop iOS from zooming on focus */
+  input, select, textarea {
+    font-size: max(16px, 1em);
+  }
+
+  button:not(:disabled), [role="button"], summary, label[for] {
+    cursor: pointer;
+  }
+
+  /* Global focus ring — visible on every background */
+  :focus-visible {
+    outline: 3px solid var(--color-primary-600);
+    outline-offset: 2px;
   }
 }
 
 /* Skip link — hidden until focused by keyboard */
 .skip-link {
-  position: absolute;
-  left: -9999px;
-  top: var(--spacing-8);
+  position: fixed;
+  left: var(--spacing-16);
+  top: var(--spacing-16);
   z-index: 100;
-  padding: var(--spacing-8) var(--spacing-16);
-  background: var(--color-primary-400);
-  color: var(--color-bg-dark);
-  font-weight: bold;
-  border-radius: var(--radius-8);
+  padding: var(--spacing-12) var(--spacing-16);
+  background: var(--color-bg-dark);
+  color: var(--color-white);
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: var(--radius-2);
   text-decoration: none;
+  transform: translateY(-200%);
 }
 .skip-link:focus-visible {
-  left: var(--spacing-16);
-}
-
-/* Global focus ring — overridden per-element where needed */
-:focus-visible {
-  outline: 2px solid var(--color-primary-400);
-  outline-offset: 2px;
+  transform: none;
 }
 
 /* Smooth colour transitions for interactive elements */
-a, button {
-  transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease, opacity 120ms ease;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-gilroy), Helvetica, sans-serif;
-
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: minmax(2rem, 2fr) minmax(0, 390px) minmax(2rem, 2fr);
-  grid-template-rows: auto 1fr auto;
-
-  >*:not(.fullbleed) {
-    grid-column: 2;
-  }
-
-  .fullbleed {
-    grid-column: 1/-1;
-    display: grid;
-    grid-template-columns: subgrid;
-
-    >* {
-      grid-column: 2;
-    }
-  }
+a, button, input, select, textarea, summary {
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease,
+    transform 150ms ease;
 }
 
 /* Trimmer luften over versalhøjden og under baseline,
    så tekstboksen passer præcist til selve bogstaverne
-   (Figmas "vertical trim" — hed leading-trim/text-edge i det gamle udkast) */
+   (Figmas "vertical trim") */
 @utility text-trim {
   text-box: trim-both cap alphabetic;
 }
 
+/* Page container — same gutters everywhere */
+@utility container-page {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: var(--spacing-16);
+
+  @media (width >= 40rem) {
+    padding-inline: var(--spacing-24);
+  }
+  @media (width >= 64rem) {
+    padding-inline: var(--spacing-40);
+  }
+}
+
+/* Room under the content so the floating mobile nav never covers it */
+@utility pb-nav {
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + var(--spacing-24));
+
+  @media (width >= 64rem) {
+    padding-bottom: var(--spacing-48);
+  }
+}
+
+/* Primary button bevel from Figma (inset bottom edge) */
+@utility bevel {
+  box-shadow: inset 0 -2px 0 0 var(--bevel-color, var(--color-primary-600));
+}
+
+/* Form fields (inputs, selects, search) */
+.field {
+  background: var(--color-white);
+  border: 2px solid var(--color-grey-100);
+  border-radius: var(--radius-2);
+  outline: none;
+}
+.field:hover {
+  border-color: var(--color-primary-200);
+}
+.field:focus-visible {
+  border-color: var(--color-primary-600);
+  box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+/* Native <dialog> open/close animation */
+dialog {
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease,
+    overlay 200ms allow-discrete,
+    display 200ms allow-discrete;
+}
+dialog[open] {
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  dialog[open] {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+dialog::backdrop {
+  background: rgb(26 26 24 / 0);
+  backdrop-filter: blur(0);
+  transition:
+    background 200ms ease,
+    backdrop-filter 200ms ease,
+    overlay 200ms allow-discrete,
+    display 200ms allow-discrete;
+}
+dialog[open]::backdrop {
+  background: rgb(26 26 24 / 0.55);
+  backdrop-filter: blur(2px);
+}
+@starting-style {
+  dialog[open]::backdrop {
+    background: rgb(26 26 24 / 0);
+    backdrop-filter: blur(0);
+  }
+}
 
 .dropdown {
   interpolate-size: allow-keywords;
@@ -254,4 +308,14 @@ body {
 
 .dropdown[open]::details-content {
   height: auto;
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

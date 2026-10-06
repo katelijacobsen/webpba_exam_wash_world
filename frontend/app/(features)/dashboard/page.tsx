@@ -1,11 +1,17 @@
+import type { Metadata } from "next";
+import Link from "next/link";
 import { connection } from "next/server";
 import Header from "@/app/global/components/Header";
+import Icon from "@/app/global/components/Icon";
 import { getEventLocations } from "@/app/lib/api";
 import Greeting from "./components/Greeting";
 import PromoCard from "./components/PromoCard";
-import LocationCard from "./components/LocationCard";
 import Co2Card from "./components/Co2Card";
+import QuickActions from "./components/QuickActions";
+import Card from "../locationlist/components/Card";
 import { Location } from "../locationlist/hooks/useFilterLocations";
+
+export const metadata: Metadata = { title: "Hjem" };
 
 export default async function DashboardPage() {
   // Prerendering stopper her — dashboardet renderes ved hvert request,
@@ -37,17 +43,45 @@ export default async function DashboardPage() {
     },
   ];
 
-  const list = locations.length >= 2 ? locations.slice(0, 2) : fallback;
+  const list = locations.length > 0 ? locations.slice(0, 2) : fallback;
 
   return (
     <>
       <Header title="Hjem" />
-      <main className="flex flex-col gap-24 py-24 bg-bg">
-        <Greeting />
-        <PromoCard />
-        <LocationCard location={list[0]} showImage available />
-        <LocationCard location={list[0]} available />
-        <Co2Card kg={23.5} />
+      <main className="container-page pt-24 pb-nav grid gap-24 lg:gap-32 lg:grid-cols-12">
+        <div className="lg:col-span-12">
+          <Greeting />
+        </div>
+
+        <div className="lg:col-span-6 xl:col-span-7">
+          <PromoCard />
+        </div>
+
+        <div className="lg:col-span-6 xl:col-span-5 flex flex-col gap-12">
+          <Co2Card kg={23.5} />
+          <QuickActions />
+        </div>
+
+        <section aria-labelledby="locations-heading" className="lg:col-span-12 flex flex-col gap-16">
+          <div className="flex items-end justify-between gap-16">
+            <h2 id="locations-heading" className="text-md font-bold uppercase">
+              Vaskehaller
+            </h2>
+            <Link
+              href="/locationlist"
+              className="inline-flex items-center gap-4 min-h-48 font-bold uppercase text-sm text-primary-800 underline decoration-2 decoration-primary-400 underline-offset-[6px] hover:decoration-primary-800"
+            >
+              Se alle <Icon iconName="next" size="xs" />
+            </Link>
+          </div>
+          <ul className="grid gap-16 md:grid-cols-2">
+            {list.map((location) => (
+              <li key={location.location_pk}>
+                <Card location={location} headingLevel="h3" />
+              </li>
+            ))}
+          </ul>
+        </section>
       </main>
     </>
   );

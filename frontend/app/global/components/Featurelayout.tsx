@@ -15,12 +15,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (sessionQuery.isPending) {
     return (
-      <div
-        className="flex items-center justify-center min-h-[40vh]"
-        role="status"
-        aria-label="Indlæser..."
-      >
-        <Loader />
+      <div className="grid place-items-center min-h-[60dvh]">
+        <Loader label="Tjekker login…" />
       </div>
     );
   }

@@ -19,7 +19,7 @@ describe("Signup", () => {
     cy.get('#signup').should('be.visible').click()
     cy.get("#signupform").should("be.visible")
     cy.get('input[name="user_password"]').should('be.visible').click()
-    cy.contains("span", "Must be between 8 and 50 characters").should('be.visible')
+    cy.contains("span", "Skal være mellem 8 og 50 tegn").should('be.visible')
   });
 
   it("should show an error when password is too short", () => {

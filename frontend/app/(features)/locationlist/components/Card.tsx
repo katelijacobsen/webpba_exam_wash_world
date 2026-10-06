@@ -1,63 +1,62 @@
 import Icon from "@/app/global/components/Icon";
 import Button from "@/app/global/components/Button";
 import type { Location } from "../hooks/useFilterLocations";
-import Link from "next/link";
+import AvailabilityStrip from "./AvailabilityStrip";
+import { directionsUrl, formatDistance, locationAvailability } from "../utils/location";
 
 interface CardProps {
   location: Location;
-  innerCleanCount?: [number, number];
-  washBayCount?: [number, number];
-  distance?: string;
+  // Only known when the user has shared their position
+  distanceKm?: number;
+  headingLevel?: "h2" | "h3";
 }
 
-const Card = ({
-  location,
-  innerCleanCount = [1, 2],
-  washBayCount = [3, 5],
-  distance = "800M",
-}: CardProps) => {
+// Figma "carwashCard/Default"
+const Card = ({ location, distanceKm, headingLevel: Heading = "h2" }: CardProps) => {
+  const { insideClean, carWash } = locationAvailability(location);
+
   return (
-    <article className="rounded-4 border border-grey-100 overflow-hidden bg-surface-2">
-      <div className="relative grid grid-cols-2 py-12 bg-primary-50">
-        <div className="flex items-center justify-center gap-8 text-primary-600">
-          <Icon iconName="vacuum" />
-          <div className="flex flex-col items-center leading-tight">
-            <span className="text-sm font-bold">
-              {innerCleanCount[0]}/{innerCleanCount[1]}
-            </span>
-            <span className="uppercase text-xs font-bold">Indre Bilpleje</span>
-          </div>
-        </div>
+    <article className="group flex flex-col h-full rounded-2 border border-grey-100 bg-surface-2 overflow-hidden hover:border-primary-100 hover:shadow-card">
+      <AvailabilityStrip insideClean={insideClean} carWash={carWash} />
 
-        <div className="flex items-center justify-center gap-8 text-primary-600">
-          <Icon iconName="bubble" />
-          <div className="flex flex-col items-center leading-tight">
-            <span className="text-sm font-bold">
-              {washBayCount[0]}/{washBayCount[1]}
-            </span>
-            <span className="uppercase text-xs font-bold">Vaskehaller</span>
-          </div>
-        </div>
-
-        <span
-          aria-hidden="true"
-          className="absolute top-0 left-1/2 h-full w-px bg-surface -translate-x-1/2 rotate-18"
-        />
-      </div>
-      <div className="flex items-center justify-between px-16 py-16">
-        <div className="flex items-start flex-col text-text">
-          <div className="leading-tight flex items-center">
-          <Icon iconName="location" />
-            <h2 className="text-lg font-bold uppercase">
+      <div className="flex items-start justify-between gap-12 px-12 pt-16 pb-4">
+        <div className="flex items-start gap-6 min-w-0">
+          <Icon iconName="location" style="mt-[-2px] text-text" />
+          <div className="flex flex-col gap-6 min-w-0">
+            <Heading className="text-lg font-bold uppercase leading-none text-trim">
               {location.location_city}
-            </h2>
+            </Heading>
+            <p className="text-sm font-bold uppercase leading-snug text-text/80 break-words">
+              {location.location_address}
+            </p>
           </div>
-            <p className="uppercase text-xs pl-24">{location.location_address}</p>
         </div>
-        <Link href={`/locationlist/${location.location_pk}`} className="text-xs text-text">
-          {distance}
-        </Link>
-        <Icon iconName="next" />
+        {distanceKm !== undefined && (
+          <p className="shrink-0 text-sm font-bold uppercase whitespace-nowrap pt-2">
+            <span className="sr-only">Afstand: </span>
+            {formatDistance(distanceKm)}
+          </p>
+        )}
+      </div>
+
+      <div className="mt-auto grid grid-cols-[1fr_auto] gap-12 px-12 pt-20 pb-12">
+        <Button
+          elementType="link"
+          linkHref={`/locationlist/${location.location_pk}`}
+          buttonName="Vælg vaskehal"
+          ariaLabel={`Vælg vaskehal: ${location.location_title}`}
+          size="lg"
+          type="primary"
+        />
+        <Button
+          elementType="link"
+          external
+          linkHref={directionsUrl(location)}
+          buttonName="Find vej"
+          ariaLabel={`Find vej til ${location.location_title} (åbner Google Maps i nyt vindue)`}
+          size="sm"
+          type="secondary"
+        />
       </div>
     </article>
   );

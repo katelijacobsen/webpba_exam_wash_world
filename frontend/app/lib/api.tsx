@@ -96,8 +96,10 @@ export async function logout() {
 // host.docker.internal escapes the container and reaches the backend on the host machine.
 // Axios calls use http://localhost because they run client-side in the browser, where localhost is the host machine.
 export async function getEventLocations(): Promise<Location[]> {
+  // Falls back to BACKEND_URL when running outside Docker (e.g. plain `npm run dev`)
+  const SERVER_BACKEND_URL = process.env.BACKEND_INTERNAL_URL ?? BACKEND_URL;
   const response = await fetch(
-    `${BACKEND_URL}/api-get-all-locations`,
+    `${SERVER_BACKEND_URL}/api-get-all-locations`,
     { method: "GET", cache: "no-store" },
   );
 

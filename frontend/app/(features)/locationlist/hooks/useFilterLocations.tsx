@@ -22,7 +22,7 @@ export function useFilterLocations(locations: Location[]) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("Alle");
 
-  const searchValue = search.toLowerCase();
+  const searchValue = search.trim().toLowerCase();
 
   const filters = [
     "Alle",
@@ -30,12 +30,14 @@ export function useFilterLocations(locations: Location[]) {
       locations.map((location) => location.location_region).filter(Boolean),
     ),
   ];
+
+  // Region must always match; the search text can match title, city or address
   const filteredLocations = locations.filter(
     (loc) =>
-      ((filter === "Alle" || loc.location_region === filter) &&
-        loc.location_title.toLowerCase().includes(searchValue)) ||
-      loc.location_city.toLowerCase().includes(searchValue) ||
-      loc.location_address.toLowerCase().includes(searchValue),
+      (filter === "Alle" || loc.location_region === filter) &&
+      (loc.location_title.toLowerCase().includes(searchValue) ||
+        loc.location_city.toLowerCase().includes(searchValue) ||
+        loc.location_address.toLowerCase().includes(searchValue)),
   );
 
   return {

@@ -17,9 +17,10 @@ export default function Form({ user, onSave, onCancel }: Props) {
   const [phoneNumber, setPhoneNumber] = useState(user.user_phonenumber);
   const [address, setAddress] = useState(user.user_address);
   const updateMutation = useUpdateUser();
-  const errorData = (updateMutation.error as any)?.response?.data;
-  const tooltip = errorData?.tooltip as string | undefined;
-  const errorMessage = errorData?.error as string | undefined;
+  const errorData = (updateMutation.error as { response?: { data?: { tooltip?: string; error?: string } } } | null)?.response?.data;
+  const tooltip = errorData?.tooltip;
+  const errorMessage = errorData?.error;
+  const errorFor = (field: string) => (tooltip === field ? errorMessage : undefined);
 
   useEffect(() => {
     if (updateMutation.isSuccess) onSave();
@@ -37,7 +38,7 @@ export default function Form({ user, onSave, onCancel }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-24">
-      <fieldset className="flex flex-col gap-16 border-0 p-0">
+      <fieldset className="grid gap-16 sm:grid-cols-2 border-0 p-0 m-0">
         <legend className="sr-only">Personlige oplysninger</legend>
 
         <Input
@@ -45,77 +46,80 @@ export default function Form({ user, onSave, onCancel }: Props) {
           name="user_fullname"
           label="user_fullname"
           inputLabel="Fulde navn"
+          autoComplete="name"
           value={fullname}
           onChange={setFullname}
           minLength={USER_FULLNAME_MIN}
           maxLength={USER_FULLNAME_MAX}
+          error={errorFor("user_fullname")}
           required
         />
-        {tooltip === "user_fullname" && (
-          <p className="text-sm text-danger">{errorMessage}</p>
-        )}
 
         <Input
           type="email"
           name="user_email"
           label="user_email"
           inputLabel="Email"
+          autoComplete="email"
           value={email}
           onChange={setEmail}
+          error={errorFor("user_email")}
           required
         />
-        {tooltip === "user_email" && (
-          <p className="text-sm text-danger">{errorMessage}</p>
-        )}
 
         <Input
           type="tel"
           name="user_phonenumber"
           label="user_phonenumber"
           inputLabel="Telefonnummer"
+          autoComplete="tel"
           value={phoneNumber}
           onChange={setPhoneNumber}
           minLength={USER_PHONENUMBER_MIN}
           maxLength={USER_PHONENUMBER_MAX}
+          error={errorFor("user_phonenumber")}
           required
         />
-        {tooltip === "user_phonenumber" && (
-          <p className="text-sm text-danger">{errorMessage}</p>
-        )}
 
         <Input
           type="text"
           name="user_address"
           label="user_address"
           inputLabel="Adresse"
+          autoComplete="street-address"
           value={address}
           onChange={setAddress}
           minLength={USER_ADDRESS_MIN}
           maxLength={USER_ADDRESS_MAX}
+          error={errorFor("user_address")}
           required
         />
-        {tooltip === "user_address" && (
-          <p className="text-sm text-danger">{errorMessage}</p>
-        )}
       </fieldset>
 
-      <div className="flex flex-col gap-12">
-        <Button
-          typeAction="submit"
-          elementType="button"
-          buttonName={
-            updateMutation.isPending ? "loading..." : "Opdater Profil"
-          }
-          size="lg"
-          type="primary"
-        />
+      {updateMutation.isError && !tooltip && (
+        <p role="alert" className="text-sm font-medium text-danger-text">
+          Vi kunne ikke gemme dine ændringer. Prøv igen.
+        </p>
+      )}
+
+      <div className="grid grid-cols-2 gap-12 sm:flex sm:justify-end">
         <Button
           typeAction="button"
           elementType="button"
           buttonName="Annullér"
-          size="lg"
-          type="tertiary"
+          size="sm"
+          type="secondary"
+          className="max-sm:w-full"
           onClick={onCancel}
+        />
+        <Button
+          typeAction="submit"
+          elementType="button"
+          buttonName={updateMutation.isPending ? "Gemmer…" : "Gem"}
+          disabled={updateMutation.isPending}
+          size="sm"
+          type="primary"
+          className="max-sm:w-full"
         />
       </div>
     </form>

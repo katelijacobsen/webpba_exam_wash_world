@@ -1,14 +1,13 @@
-import Header from "./global/components/Header";
+import type { Metadata } from "next";
+import AuthLayout from "./(features)/authentication/components/AuthLayout";
 import Form from "./(features)/authentication/components/Form";
+
+export const metadata: Metadata = { title: "Log ind" };
 
 export default function Home() {
   return (
-    <>
-    <Header
-    title="Login"/>
-    <main>
+    <AuthLayout>
       <Form />
-    </main>
-   </>
+    </AuthLayout>
   );
 }

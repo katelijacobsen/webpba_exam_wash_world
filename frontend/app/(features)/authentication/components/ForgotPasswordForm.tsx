@@ -2,13 +2,15 @@
 
 import Button from "@/app/global/components/Button";
 import Input from "@/app/global/components/Input";
+import Icon from "@/app/global/components/Icon";
 import { useState } from "react";
 // custom hook
 import { useForgotPassword } from "../hooks/useForgotPassword";
+import AuthCard from "./AuthCard";
 
-type Props = { onToggleLogin: () => void, onToggleSignup: () => void  };
+type Props = { onToggleLogin: () => void, onToggleSignup: () => void, focus?: boolean };
 
-export default function ForgotPasswordForm({ onToggleLogin, onToggleSignup }: Props) {
+export default function ForgotPasswordForm({ onToggleLogin, onToggleSignup, focus }: Props) {
   // useState
   const [forgotPassword, setForgetPassword] = useState("");
   // custom hook useLogin
@@ -23,42 +25,48 @@ export default function ForgotPasswordForm({ onToggleLogin, onToggleSignup }: Pr
   }
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <fieldset>
-          <legend>Forgot Password</legend>
-          <Input
-            type="text"
-            name="forgot_password"
-            label="Email"
-            inputLabel="Email"
-            value={forgotPassword}
-            onChange={setForgetPassword}
-          />
-        </fieldset>
-        {signupMutation.isError && <p style={{ color: "red" }}>nopes</p>}
-        {signupMutation.isSuccess && <p style={{ color: "green" }}>yeps</p>}
-        <Button
-          buttonName={signupMutation.isPending ? "Sender..." : "Email Send"}
-          size="lg"
+    <AuthCard
+      title="Glemt adgangskode"
+      intro="Skriv din email, så sender vi et link til at vælge en ny adgangskode."
+      autoFocusHeading={focus}
+      footer={
+        <div className="flex flex-wrap justify-center gap-x-24">
+          <Button typeAction="button" elementType="button" type="tertiary" buttonName="Tilbage til log ind" size="sm" onClick={onToggleLogin} />
+          <Button typeAction="button" elementType="button" type="tertiary" buttonName="Opret bruger" size="sm" onClick={onToggleSignup} />
+        </div>
+      }
+    >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-20">
+        <Input
+          type="email"
+          name="forgot_password"
+          label="Email"
+          inputLabel="Email"
+          autoComplete="email"
+          value={forgotPassword}
+          onChange={setForgetPassword}
+          required
         />
+        {signupMutation.isError && (
+          <p role="alert" className="flex items-start gap-8 p-12 rounded-2 bg-danger-10-opacity text-danger-text text-sm font-medium">
+            <Icon iconName="circleerror" size="sm" />
+            Vi kunne ikke sende mailen. Tjek adressen og prøv igen.
+          </p>
+        )}
+        {signupMutation.isSuccess && (
+          <p role="status" className="flex items-start gap-8 p-12 rounded-2 bg-success-10-opacity text-success-text text-sm font-medium">
+            <Icon iconName="circlecheck" size="sm" />
+            Tjek din indbakke — vi har sendt dig et link.
+          </p>
+        )}
         <Button
-        typeAction="button"
-          elementType="button"
-          type={"tertiary"}
-          buttonName="Login"
+          typeAction="submit"
+          buttonName={signupMutation.isPending ? "Sender…" : "Send link"}
+          disabled={signupMutation.isPending}
+          iconName="send"
           size="lg"
-          onClick={onToggleLogin}
-        />
-        <Button
-        typeAction="button"
-          elementType="button"
-          type={"tertiary"}
-          buttonName="Sign up"
-          size="lg"
-          onClick={onToggleSignup}
         />
       </form>
-    </>
+    </AuthCard>
   );
 }

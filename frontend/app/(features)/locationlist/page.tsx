@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import Header from "@/app/global/components/Header";
 import LocationSearch from "./components/LocationSearch";
 import { getEventLocations } from "@/app/lib/api";
 
+export const metadata: Metadata = { title: "Find vaskehal" };
 
 export default async function Home() {
   // Prerendering stopper her — listen hentes ved hvert request
@@ -11,9 +13,8 @@ export default async function Home() {
 
   return (
     <>
-      <Header title="Bil vask"
-      backButton={{ elementType: "link", goBack: true, size: "sm", type: "none", iconName: "back", }}/>
-      <main>
+      <Header title="Vaskehal oversigt" back="/dashboard" />
+      <main className="container-page pt-8 pb-nav">
         <LocationSearch locations={locations} />
       </main>
     </>

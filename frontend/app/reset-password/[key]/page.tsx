@@ -1,4 +1,8 @@
+import type { Metadata } from "next";
+import AuthLayout from "@/app/(features)/authentication/components/AuthLayout";
 import ResetPasswordForm from "@/app/(features)/authentication/components/ResetPasswordForm";
+
+export const metadata: Metadata = { title: "Ny adgangskode" };
 
 export default async function ResetPassword({
     params,
@@ -6,5 +10,9 @@ export default async function ResetPassword({
   params: Promise<{ key: string }>;
 }) {
   const { key } = await params;
-  return <ResetPasswordForm ResetKey={key} />;
+  return (
+    <AuthLayout>
+      <ResetPasswordForm ResetKey={key} />
+    </AuthLayout>
+  );
 }
