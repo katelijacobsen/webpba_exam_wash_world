@@ -41,11 +41,11 @@ export default function LoginForm({ onToggleSignup, onForgotPassword }: Props) {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="bg-surface border-2 border-surface-2 p-32 flex flex-col gap-32">
-        <fieldset>
-          <legend className="font-bold">Personal Information</legend>
+      <form onSubmit={handleSubmit} className="bg-surface rounded-12 border border-grey-100 p-32 flex flex-col gap-24">
+        <fieldset className="flex flex-col gap-16 border-none p-0">
+          <legend className="font-bold text-md mb-8">Log ind</legend>
           <Input
-            type="text"
+            type="email"
             name="email"
             label="email"
             inputLabel="Email"
@@ -70,7 +70,7 @@ export default function LoginForm({ onToggleSignup, onForgotPassword }: Props) {
         </fieldset>
         {/* Sender error beskeden ned til vores loginMutation */}
         {loginMutation.isError && (
-          <p style={{ color: "red" }}>Login fejlede</p>
+          <p role="alert" className="text-danger text-sm font-medium">Login fejlede — tjek din email og adgangskode.</p>
         )}
         <Button
           typeAction="submit"

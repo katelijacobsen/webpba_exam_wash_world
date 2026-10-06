@@ -1,16 +1,23 @@
 
-
-
 .success {
-  border-radius:var(--radius-2);
+  border-radius: var(--radius-8);
   background: var(--color-success-10-opacity);
   border: solid 2px var(--color-success);
+  /* outline removal is intentional — replaced by :focus-visible below */
   outline: none;
 }
+.success:focus-visible {
+  outline: 2px solid var(--color-success);
+  outline-offset: 2px;
+}
 
-.error{
-  border-radius:var( --radius-2);
+.error {
+  border-radius: var(--radius-8);
   background-color: var(--color-danger-10-opacity);
   border: solid 2px var(--color-danger);
   outline: none;
+}
+.error:focus-visible {
+  outline: 2px solid var(--color-danger);
+  outline-offset: 2px;
 }

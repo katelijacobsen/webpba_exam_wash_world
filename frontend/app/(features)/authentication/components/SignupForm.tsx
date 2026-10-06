@@ -53,7 +53,7 @@ export default function SignupForm({ onToggleLogin }: Props) {
           minLength={USER_FULLNAME_MIN}
           maxLength={USER_FULLNAME_MAX}
         />
-        {tooltip === "user_fullname" && ( <p>{errorMessage}</p>)}
+        {tooltip === "user_fullname" && <p role="alert" className="text-danger text-sm">{errorMessage}</p>}
         {/* Adresse */}
         <Input
           type="text"
@@ -64,8 +64,8 @@ export default function SignupForm({ onToggleLogin }: Props) {
           onChange={setAddress}
           minLength={USER_ADDRESS_MIN}
           maxLength={USER_ADDRESS_MAX}
-          />
-          {tooltip === "user_address" && ( <p>{errorMessage}</p>)}
+        />
+        {tooltip === "user_address" && <p role="alert" className="text-danger text-sm">{errorMessage}</p>}
         {/* Mobilnummer */}
         <Input
           type="tel"
@@ -76,8 +76,8 @@ export default function SignupForm({ onToggleLogin }: Props) {
           onChange={setPhoneNumber}
           minLength={USER_PHONENUMBER_MIN}
           maxLength={USER_PHONENUMBER_MAX}
-          />
-          {tooltip === "user_phonenumber" && ( <p>{errorMessage}</p>)}
+        />
+        {tooltip === "user_phonenumber" && <p role="alert" className="text-danger text-sm">{errorMessage}</p>}
         {/* Email */}
         <Input
           type="email"
@@ -87,7 +87,7 @@ export default function SignupForm({ onToggleLogin }: Props) {
           value={email}
           onChange={setEmail}
         />
-        {tooltip === "user_email" && ( <p>{errorMessage}</p>)}
+        {tooltip === "user_email" && <p role="alert" className="text-danger text-sm">{errorMessage}</p>}
         {/* Adgangskode */}
         <Input
           type="password"
@@ -98,9 +98,8 @@ export default function SignupForm({ onToggleLogin }: Props) {
           onChange={setPassword}
           minLength={USER_PASSWORD_MIN}
           maxLength={USER_PASSWORD_MAX}
-          
         />
-        {tooltip === "user_password" && ( <p>{errorMessage}</p>)}
+        {tooltip === "user_password" && <p role="alert" className="text-danger text-sm">{errorMessage}</p>}
       </fieldset>
       {/* Acceptere Vilkår */}
       <Input
@@ -112,7 +111,7 @@ export default function SignupForm({ onToggleLogin }: Props) {
         onChange={setConsent}
         required={true}
       />
-      {signupMutation.isSuccess && <p style={{ color: "green" }}>{signupMutation.data?.msg ?? "Bruger oprettet"}</p>}
+      {signupMutation.isSuccess && <p role="status" className="text-success text-sm font-medium">{signupMutation.data?.msg ?? "Bruger oprettet"}</p>}
       <Button
         id="signingup"
         typeAction="submit"
