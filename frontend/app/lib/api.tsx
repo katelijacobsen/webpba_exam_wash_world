@@ -11,7 +11,7 @@ import type { AddCar } from "@/app/global/types/global";
 axios.defaults.withCredentials = true;
 
 
-// Base URL for the Flask backend (set in .env). Runs client-side, so it must be NEXT_PUBLIC_.
+// Browser-facing Flask URL, also used when running Next.js directly on the host.
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 if (!BACKEND_URL) {
   throw Error("Cannot find path")
@@ -90,14 +90,12 @@ export async function logout() {
   localStorage.removeItem("token");
 }
 
-// locations
-// Uses fetch (not axios) with host.docker.internal because this runs server-side inside the Next.js Docker container.
-// From inside the container, localhost refers to the container itself — not the Flask service.
-// host.docker.internal escapes the container and reaches the backend on the host machine.
-// Axios calls use http://localhost because they run client-side in the browser, where localhost is the host machine.
+// Server-side location requests use the Docker-reachable URL when configured.
+// Host development falls back to the browser-facing backend URL.
 export async function getEventLocations(): Promise<Location[]> {
+  const backendUrl = process.env.BACKEND_INTERNAL_URL || BACKEND_URL;
   const response = await fetch(
-    `${BACKEND_URL}/api-get-all-locations`,
+    `${backendUrl}/api-get-all-locations`,
     { method: "GET", cache: "no-store" },
   );
 

@@ -1,10 +1,10 @@
-version: "3.9"
+name: wash-world-frontend
 
 services:
   react-app:
     build: .
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
@@ -13,5 +13,4 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: 
-      npm run dev        
+    command: npm run dev

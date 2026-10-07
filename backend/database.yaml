@@ -1,0 +1,33 @@
+
+services:
+  mariadb:
+    image: mariadb:11.4.13
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./extentions/wash_world.sql:/docker-entrypoint-initdb.d/01-wash-world.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    ports:
+      - 3307:3306 # host 3307 -> container 3306 (MariaDB's default port)
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      PMA_HOST: ${DB_HOST}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 8080:80
+      
+# For persisting data with named volumes.
+volumes:
+  mariadb_data:

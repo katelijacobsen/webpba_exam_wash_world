@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: `${process.env.FLASK_SERVER_SIDE_ONLY}/api/:path*`, // ← service name from docker-compose.yml
+        destination: `${process.env.FLASK_SERVER_SIDE_ONLY}/api/:path*`, // Backend address reachable from the Next.js server.
       },
     ];
   },

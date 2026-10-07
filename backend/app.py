@@ -22,6 +22,7 @@ load_dotenv()
 app = Flask(__name__)
 
 app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_COOKIE_NAME"] = "wash_world_session"
 app.config["JWT_SECRET_KEY"] = "..."
 
 
@@ -29,6 +30,8 @@ Session(app)
 jwt = JWTManager(app)
 
 CORS(app, supports_credentials=True, origins=os.getenv("FRONTEND_URL"))
+
+
 
 # Her bliver blueprint registeret. Det er syntaksen for at den så kører på serveren.
 # Det samme biver gjort med de andre moduler / filer der bliver oprettet.
@@ -41,3 +44,11 @@ UPLOAD_FOLDER = "./static/uploads"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 2 * 512 * 512
+
+
+# Til Flask docker health-check
+@app.get("/health")
+def health():
+    return {"status": "ok", "volume_test": "updated live"}, 200
+
+# making a change

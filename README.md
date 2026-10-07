@@ -1,175 +1,124 @@
 # Wash World 2.0
 
-A web app for Wash World car wash customers: sign up for a membership, manage your cars and profile, find wash locations on a map, and follow wash guides.
+A car wash customer application with a Flask/Python 3.12 backend, MariaDB database, and Next.js frontend. This Docker setup is for local development.
 
-The repo is a monorepo with two parts that each run in Docker:
+## Run the backend
 
-| Folder | What | Stack | Runs on |
-|---|---|---|---|
-| [`frontend/`](frontend) | Web app | Next.js 16, React 19, TypeScript, Tailwind CSS 4, TanStack Query, Mapbox | http://localhost:3000 |
-| [`backend/`](backend) | REST API | Flask 3 (Python 3.9), MariaDB 10.6 | http://localhost (port 80) |
-| | Database admin | phpMyAdmin | http://localhost:8080 |
+Start [Docker Desktop](https://www.docker.com/products/docker-desktop/) with Docker Compose 2.22 or later. Clone or download this repository, then open PowerShell in the repository root.
 
-## Prerequisites
+For a fresh checkout, create the configuration file (keep an existing configured `.env`):
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- A Gmail account with an [App Password](https://myaccount.google.com/apppasswords), for sign-up verification and password-reset emails
-- A [Mapbox](https://account.mapbox.com/) public access token, for the location map
-
-## Getting started
-
-### 1. Create the `.env` files
-
-Both apps read their settings from a `.env` file. These files are git-ignored, so you must create them from the examples:
-
-```bash
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
-```
-
-Then fill in the values that can't be left as defaults:
-
-**`backend/.env`**
-
-| Variable | Value |
-|---|---|
-| `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | Keep the defaults. They match `backend/docker-compose.yml`. `DB_HOST` must be `mariadb` (the service name), not `localhost`. |
-| `JWT_SECRET_KEY` | A long random string: `python -c "import secrets; print(secrets.token_hex(32))"` |
-| `SENDER_EMAIL` | The Gmail address that sends emails |
-| `SENDER_EMAIL_PASSWORD` | The 16-character Gmail **App Password** (not the normal Gmail password) |
-| `FRONTEND_URL` | `http://localhost:3000`. Used for CORS and must be set, or every request fails. |
-
-**`frontend/.env`**
-
-| Variable | Value |
-|---|---|
-| `NEXT_PUBLIC_BACKEND_URL` | `http://localhost` |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | Your Mapbox public token (`pk....`) |
-| `FLASK_SERVER_SIDE_ONLY` | Used by the `/api/*` rewrite in `next.config.ts`. Must be a full URL, or the build fails. |
-
-> `NEXT_PUBLIC_*` values are bundled into the browser. Never put a secret behind a `NEXT_PUBLIC_` name.
-
-### 2. Start the backend
-
-```bash
+```powershell
 cd backend
-docker compose up --build
+Copy-Item .env.example .env
 ```
 
-This starts three containers: `monorepo_flask` (the API), `monorepo_mariadb` (the database), and `monorepo_phpmyadmin`.
+Keep the example database settings for local development:
 
-### 3. Set up the database
-
-The first time, import the schema and data:
-
-1. Open phpMyAdmin at http://localhost:8080 (user `root`, password `password`).
-2. Select the `wash_world` database.
-3. Go to **Import** and upload [`backend/extentions/wash_world.sql`](backend/extentions/wash_world.sql).
-
-This creates all tables and loads the Wash World locations, so you don't need to import `locations_import.sql` separately. It contains the same rows, and importing it again fails with a duplicate-entry error (#1062).
-
-The data is stored in the `mariadb_data` Docker volume, so it survives restarts. To start over with an empty database, run `docker compose down -v`.
-
-### 4. Start the frontend
-
-In a second terminal:
-
-```bash
-cd frontend
-docker compose up --build
+```dotenv
+DB_HOST=mariadb
+DB_USER=root
+DB_PASSWORD=password
+DB_NAME=wash_world
 ```
 
-Open http://localhost:3000.
+For signup verification and password-reset emails, fill in these entries in `backend/.env`:
 
-The source folder is mounted into the container, so edits reload automatically.
+- `SENDER_EMAIL`: the Gmail address that will send the emails.
+- `SENDER_EMAIL_PASSWORD`: an app password generated at
+[Google Account → App Passwords](https://myaccount.google.com/apppasswords), rather than your normal Gmail password. Your Google account must have 2-Step Verification enabled; see [Google's instructions](https://support.google.com/accounts/answer/185833).
 
-## Project structure
+The backend checks below need neither email credentials nor the frontend.
 
-```
-backend/
-├── app.py                 # Entry point: Flask app, CORS, sessions, blueprints
-├── api/                   # Routes, one blueprint per area
-│   ├── users.py           # Signup, login, verification, password reset, profile
-│   ├── cars.py            # A user's cars
-│   ├── locations.py       # Wash locations
-│   └── payment.py         # Payment methods (not registered in app.py yet)
-├── utils/
-│   ├── config.py          # Database connection (reads DB_* from .env)
-│   ├── regex.py           # Input validation
-│   └── no_cache.py        # No-cache response decorator
-├── templates/             # Email templates (verification, forgot password)
-├── extentions/            # SQL dumps (wash_world.sql, locations_import.sql)
-└── static/uploads/        # Uploaded avatar images
+Build and start all three backend services:
 
-frontend/
-├── app/
-│   ├── (features)/        # Feature pages: dashboard, login, profile, mycar,
-│   │                      #   add_car, locationlist, washprocess, guides, case, ...
-│   ├── membership-signup/ # Sign-up flow
-│   ├── reset-password/    # Password reset page
-│   ├── global/            # Shared components, hooks, store, styles, types
-│   └── lib/api.tsx        # All calls to the Flask backend
-├── cypress/e2e/           # End-to-end tests
-└── dev/                   # Alternative dev Docker setup (no production build)
+```powershell
+docker compose up --build -d --wait
 ```
 
-## API endpoints
+Flask and phpMyAdmin wait for MariaDB's healthcheck before starting.
 
-All endpoints are served by Flask on http://localhost. Auth uses a session cookie, so the frontend sends requests with `withCredentials`.
-
-| Method | Path | Description |
+| Service | Access from your computer | Container port |
 |---|---|---|
-| POST | `/api-signup` | Create a user and send a verification email |
-| GET | `/api-verify/<key>` | Verify an email address |
-| POST | `/api-login` | Log in |
-| POST | `/logout` | Log out |
-| GET | `/api-user` | Get the logged-in user |
-| PATCH | `/api-user` | Update the logged-in user |
-| POST | `/api-user/avatar` | Upload an avatar (png/jpg) |
-| DELETE | `/delete-user` | Delete the logged-in user |
-| POST | `/forgot-password` | Send a password-reset email |
-| GET | `/reset-password/<key>` | Check a reset key |
-| PATCH | `/reset-password` | Set a new password |
-| POST | `/api-create-car` | Add a car |
-| GET | `/api-get-cars` | List the user's cars |
-| DELETE | `/delete-car/<car_pk>` | Delete a car |
-| PATCH | `/restore-car/<car_pk>` | Restore a deleted car |
-| POST | `/api-create-location` | Create a location |
-| GET | `/api-get-all-locations` | List all locations |
-| GET | `/api-get-location/<location_pk>` | Get one location |
+| Flask API | http://localhost | 8000 |
+| phpMyAdmin | http://localhost:8080 | 80 |
+| MariaDB | `localhost:3307` | 3306 |
 
-## Testing
+With the default settings, log into phpMyAdmin with `root` / `password` and select `wash_world`. An empty database volume is initialized automatically from [wash_world.sql](backend/extentions/wash_world.sql); do not import the SQL again. Existing volumes retain their database credentials, so changing `.env` does not reset an existing password.
 
-Cypress end-to-end tests live in `frontend/cypress/e2e`. With both apps running:
+## Check and develop
 
-```bash
-cd frontend
-npx cypress open
+Run these commands from `backend`:
+
+```powershell
+docker compose ps
+docker compose exec flask-app id
+Invoke-RestMethod http://localhost/health | Format-List
+
+$result = Invoke-RestMethod http://localhost/api-get-all-locations
+$result.locations |
+    Select-Object -First 3 location_title, location_city |
+    Format-Table -AutoSize
 ```
 
-Linting:
+Expect Flask and MariaDB to be healthy, phpMyAdmin running, a non-root `appuser`, and location records. The health endpoint checks Flask's response; the locations request checks database access.
 
-```bash
-cd frontend
-npm run lint
+Source changes reload through the `.:/app` bind mount and Flask's reloader. To demonstrate this, temporarily change a JSON field returned by `/health`, save, request it again, then restore the change.
+
+To also rebuild automatically when `requirements.txt` changes, use [Compose Watch](https://docs.docker.com/compose/how-tos/file-watch/):
+
+```powershell
+docker compose up --build --watch
 ```
 
-## Troubleshooting
+After changing backend `.env` values read by Flask, run `docker compose restart flask-app`.
 
-| Symptom | Cause and fix |
+In another terminal opened in `backend`, inspect resource usage or stop the stack:
+
+```powershell
+docker stats --no-stream
+docker compose down
+```
+
+Stats includes all running projects. Shutdown removes this project's containers and network but retains its named database volume; adding `--volumes` would delete that data.
+
+## How the backend is containerized
+
+| File | Role |
 |---|---|
-| Frontend build fails with `Invalid rewrite found` / `destination: "undefined/api/:path*"` | `frontend/.env` is missing. Create it from `.env.example`. |
-| `Can't connect to MySQL server on 'localhost:3306'` | `backend/.env` is missing or `DB_HOST` isn't `mariadb`. |
-| `TypeError: argument of type 'NoneType' is not iterable` in `flask_cors` | `FRONTEND_URL` isn't set in `backend/.env`. |
-| `SMTPAuthenticationError (535) Username and Password not accepted` on signup | `SENDER_EMAIL` / `SENDER_EMAIL_PASSWORD` are wrong. Use a Gmail App Password. |
-| `Duplicate entry ... for key 'user_email'` on signup | The user was saved before an earlier email failure. Use another email or delete the row in phpMyAdmin. |
-| `#1062 Duplicate entry` when importing `locations_import.sql` | The locations are already loaded by `wash_world.sql`. Skip it. |
+| [Dockerfile](backend/Dockerfile) | The Python 3.12 `builder` stage installs requirements into `/opt/venv`. The `runtime` stage copies that environment and the application. |
+| [docker-compose.yml](backend/docker-compose.yml) | Builds Flask, maps host port 80 to container port 8000, mounts source code, defines its healthcheck and Watch rule, and includes `database.yaml`. |
+| [database.yaml](backend/database.yaml) | Runs prebuilt MariaDB and phpMyAdmin images, mounts initialization SQL read-only, and declares the database volume. |
+| [.dockerignore](backend/.dockerignore) | Excludes `.env`, `*.pyc`, and `__pycache__` from the build context. |
 
-After changing `backend/.env`, restart Flask so it reads the new values:
+- **Build efficiency:** requirements are installed before source is copied, allowing dependency-layer reuse. The slim base and `--no-cache-dir` keep unnecessary content down. [Multiple stages](https://docs.docker.com/build/building/multi-stage/) separate dependency preparation from runtime assembly; a size reduction has not been verified.
+- **Security:** Flask runs as a non-root user. This does not enable [Docker engine rootless mode](https://docs.docker.com/engine/security/rootless/). The application still uses Flask's development server.
+- **Network:** Compose creates `wash-world-backend_default`; containers reach MariaDB at `mariadb:3306`.
+- **Storage and configuration:** `wash-world-backend_mariadb_data` persists database files at `/var/lib/mysql`. The source bind mount exposes the local `.env` to Flask at runtime; it is excluded from the image. Dependencies remain outside that mount in `/opt/venv`.
 
-```bash
-cd backend
-docker compose restart flask-app
+Known limitation: `app.py` currently hard-codes its JWT key, so `JWT_SECRET_KEY` in `.env` has no effect.
+
+## Run the frontend
+
+In a second terminal at the repository root, create the frontend configuration for a fresh checkout (skip the copy if `.env` is already configured):
+
+```powershell
+cd frontend
+Copy-Item .env.example .env
 ```
 
-After changing `frontend/.env`, rebuild the frontend with `docker compose up --build`.
+Set `NEXT_PUBLIC_MAPBOX_TOKEN` to your public Mapbox token. The other local settings are:
+
+```dotenv
+NEXT_PUBLIC_BACKEND_URL=http://localhost
+BACKEND_INTERNAL_URL=http://host.docker.internal
+FLASK_SERVER_SIDE_ONLY=http://host.docker.internal
+```
+
+Keep `FRONTEND_URL=http://localhost:3001` in the backend's `.env` for CORS. Start the frontend with:
+
+```powershell
+docker compose up --build
+```
+
+Open http://localhost:3001. Only public values belong in `NEXT_PUBLIC_*` variables.

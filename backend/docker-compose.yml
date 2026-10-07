@@ -1,38 +1,31 @@
+name: wash-world-backend
+include:
+  - path: ./database.yaml
 services:
   flask-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: monorepo_flask
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     ports:
-      - 80:80 # 0 - 1024 reserved. Use any port from 1025 to 65535
+      - 80:8000 # 0 - 1024 reserved. Use any port from 1025 to 65535
     volumes:
       - .:/app
-
-  mariadb:
-    image: mariadb:10.6.20
-    container_name: monorepo_mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: wash_world
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    ports:
-      - 3307:3306 # host 3307 -> container 3306 (MariaDB's default port)
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: monorepo_phpmyadmin
-    depends_on:
-      - mariadb
-    environment:
-      PMA_HOST: mariadb
-      MYSQL_ROOT_PASSWORD: password
-    ports:
-      - 8080:80
-
-volumes:
-  mariadb_data:
+    # Automatic rebuild
+    develop:
+      watch:
+        - action: rebuild
+          path: requirements.txt
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health').close()"
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
 

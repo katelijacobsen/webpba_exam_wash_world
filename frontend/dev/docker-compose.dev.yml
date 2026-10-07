@@ -1,13 +1,12 @@
-version: "3.9"
+name: wash-world-frontend
 
 services:
   react-app:
     build: 
       context: ..
       dockerfile: dev/Dockerfile.dev
-    container_name: wash_world
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       - WATCHPACK_POLLING=true
       - CHOKIDAR_USEPOLLING=true
